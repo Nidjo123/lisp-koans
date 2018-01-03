@@ -49,9 +49,23 @@
 ;
 ; Your goal is to write the score method.
 
+(defun score-1 (num)
+  (cond
+    ((= num 1) 100)
+    ((= num 5) 50)
+    (t 0)))
+
 (defun score (dice)
-  ; You need to write this method
-)
+  (labels ((calc-score (nums)
+	     (cond
+	       ((null nums) 0) ; empty list is 0 pts
+	       ((< (length nums) 3) (+ (score-1 (first nums)) (score (rest nums))))
+	       ((= (first nums) (second nums) (third nums)) ; three numbers case
+		(if (= 1 (first dice))
+		    (+ 1000 (calc-score (cdddr dice)))
+		    (+ (* 100 (car dice)) (calc-score (cdddr dice)))))
+	       (t (+ (score-1 (first nums)) (score (rest nums)))))))
+    (calc-score (sort dice #'<))))
 
 (define-test test-score-of-an-empty-list-is-zero
     (assert-equal 0 (score nil)))
