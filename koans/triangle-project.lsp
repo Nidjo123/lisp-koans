@@ -17,8 +17,24 @@
 
 (define-condition triangle-error  (error) ())
 
+(defun positivep (x)
+  "Returns true if x is positive."
+  (> x 0))
+
+(defun valid-sides (a b c)
+  (and (> (+ a b) c) (> (+ a c) b) (> (+ b c) a)))
+
 (defun triangle (a b c)
-  :write-me)
+  "Returns type of the triangle. Error is thrown if sides are invalid."
+  (if (find nil (mapcar #'positivep (list a b c)))
+      (error 'triangle-error))
+  (if (not (valid-sides a b c))
+      (error 'triangle-error))
+  
+  (cond
+    ((= a b c) :equilateral)
+    ((or (= a b) (= a c) (= b c)) :isosceles)
+    (t :scalene)))
 
 
 (define-test test-equilateral-triangles-have-equal-sides
